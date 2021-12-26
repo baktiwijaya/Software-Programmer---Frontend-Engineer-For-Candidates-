@@ -107,7 +107,7 @@
 										<label>Provinsi</label>
 										<select class="form-control" required v-on:change="searchKota()" v-model="provinsi_id">
 											<option value="">-- Pilih Provinsi --</option>
-											<option v-for="(i,idx) in provinsi" :value="i.name">{{ i.name }}</option>
+											<option v-for="(i,idx) in provinsi" :value="i.id">{{ i.name }}</option>
 										</select>
 									</div>
 
@@ -115,7 +115,7 @@
 										<label>Kota</label>
 										<select class="form-control" required v-on:change="searchKecamatan()" v-model="kota_id">
 											<option value="">-- Pilih Kota --</option>
-											<option v-for="(i,idx) in kota" :value="i.name">{{ i.name }}</option>
+											<option v-for="(i,idx) in kota" :value="i.id">{{ i.name }}</option>
 										</select>
 									</div>
 
@@ -123,7 +123,7 @@
 										<label>Kecamatan</label>
 										<select class="form-control" required v-on:change="searchKelurahan()" v-model="kecamatan_id">
 											<option value="">-- Pilih Kecamatan --</option>
-											<option v-for="(i,idx) in kecamatan" :value="i.name">{{ i.name }}</option>
+											<option v-for="(i,idx) in kecamatan" :value="i.id">{{ i.name }}</option>
 										</select>
 									</div>
 
@@ -131,7 +131,7 @@
 										<label>Kelurahan</label>
 										<select class="form-control" required v-model="kelurahan_id">
 											<option value="">-- Pilih Desa --</option>
-											<option v-for="(i,idx) in kelurahan" :value="i.name">{{ i.name }}</option>
+											<option v-for="(i,idx) in kelurahan" :value="i.id">{{ i.name }}</option>
 										</select>
 									</div>
 
