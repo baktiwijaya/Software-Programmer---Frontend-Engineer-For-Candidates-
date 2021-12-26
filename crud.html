@@ -333,7 +333,7 @@
 
 			},
 			created() {
-				fetch(`http://www.emsifa.com/api-wilayah-indonesia/api/provinces.json`)
+				fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json`)
 				.then(response => response.json())
 				.then(provinces => this.provinsi = provinces);
 			},
@@ -346,7 +346,7 @@
 					this.kelurahan_id = ""
 
 					var value = this.provinsi_id
-					fetch(`http://www.emsifa.com/api-wilayah-indonesia/api/regencies/${value}.json`)
+					fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${value}.json`)
 					.then(response => response.json())
 
 					.then(regencies => this.kota = regencies);
@@ -357,7 +357,7 @@
 					this.kelurahan = []
 					this.kecamatan_id = ""
 					this.kelurahan_id = ""
-					fetch(`http://www.emsifa.com/api-wilayah-indonesia/api/districts/${value}.json`)
+					fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${value}.json`)
 					.then(response => response.json())
 					.then(districts => this.kecamatan = districts);
 				},
@@ -365,7 +365,7 @@
 					this.kelurahan = []
 					this.kelurahan_id = ""
 					var value = this.kecamatan_id
-					fetch(`http://www.emsifa.com/api-wilayah-indonesia/api/villages/${value}.json`)
+					fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${value}.json`)
 					.then(response => response.json())
 					.then(villages => this.kelurahan = villages);
 				},
