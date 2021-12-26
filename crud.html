@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+	<link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+	<script src="https://unpkg.com/vue@latest/dist/vue.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700|Roboto:300,400,500,600,700|Material+Icons">
+	<style type="text/css">
+	.font {
+		font-family: Poppins, Helvetica, "sans-serif" !important;
+	}
+
+	.form-control {
+		-webkit-border-radius: 50px;
+		-moz-border-radius: 50px;
+		border-radius: 50px;
+		border-width: 2px;
+	}
+	.form-group {
+		padding-bottom: 5px;
+		padding-top: 5px;
+	}
+	label {
+		padding-bottom: 2px;
+		padding-top: 2px;
+		font-weight: bold;
+	}
+	</style>
+</head>
+
+<body>
+	<div id="app" class="font">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="card">
+					<div class="card-header">
+						<div class="card-title">Sample Crud</div>
+					</div>
+					<div class="card-body">
+						<div class="row">
+							<div class="col-md-6 animate__animated animate__slideInRight" v-if="pages == '1'">
+								<div v-if="errors.length == 0">
+									
+								</div>
+								<div v-else>
+									<div class="alert alert-danger" role="alert" id="errors">
+										<ul>
+											<li v-for="error in errors">{{error}}</li>
+										</ul>
+									</div>
+								</div>
+								
+								<form class="form-horizontal" id="myForm" @submit="checkForm">
+
+									<div class="form-group">
+										<label>Nama</label>
+										<input type="text" class="form-control" required v-model="nama" placeholder="Input nama...">
+									</div>
+
+									<div class="form-group">
+										<label>Umur</label>
+										<input type="number" class="form-control" required v-model="umur" placeholder="Input Umur...">
+									</div>
+
+									<div class="form-group">
+										<label>Jenis Kelamin</label>
+										<select v-model="jenis_kelamin" class="form-control" required>
+											<option value="">-- Pilih Jenis Kelamin --</option>
+											<option value="L">Pria</option>
+											<option value="P">Wanita</option>
+										</select>
+									</div>
+
+									<div class="form-group">
+										<label>NIK</label>
+										<input type="number" class="form-control" required v-model="nik" placeholder="Input Nomor Induk Kependudukan...">
+									</div>
+
+									<div class="form-group">
+										<label>Nomor Kartu Keluarga</label>
+										<input type="number" class="form-control" required v-model="no_kk" placeholder="Input Nomor Kartu Keluarga...">
+									</div>
+
+									<div class="form-group">
+										<label>Foto KTP</label>
+										<input type="file" class="form-control" required placeholder="Upload Foto Ktp...">
+									</div>
+
+									<div class="form-group">
+										<label>Foto Kartu Keluarga</label>
+										<input type="file" class="form-control" required placeholder="Upload Foto Ktp...">
+									</div>
+
+									<div class="form-group">
+										<label>Alamat</label>
+										<textarea class="form-control" required rows="2" v-model="alamat" placeholder="Input alamat...">
+											
+										</textarea>
+									</div>
+
+									<div class="form-group">
+										<label>Provinsi</label>
+										<select class="form-control" required v-on:change="searchKota()" v-model="provinsi_id">
+											<option value="">-- Pilih Provinsi --</option>
+											<option v-for="(i,idx) in provinsi" :value="i.name">{{ i.name }}</option>
+										</select>
+									</div>
+
+									<div class="form-group">
+										<label>Kota</label>
+										<select class="form-control" required v-on:change="searchKecamatan()" v-model="kota_id">
+											<option value="">-- Pilih Kota --</option>
+											<option v-for="(i,idx) in kota" :value="i.name">{{ i.name }}</option>
+										</select>
+									</div>
+
+									<div class="form-group">
+										<label>Kecamatan</label>
+										<select class="form-control" required v-on:change="searchKelurahan()" v-model="kecamatan_id">
+											<option value="">-- Pilih Kecamatan --</option>
+											<option v-for="(i,idx) in kecamatan" :value="i.name">{{ i.name }}</option>
+										</select>
+									</div>
+
+									<div class="form-group">
+										<label>Kelurahan</label>
+										<select class="form-control" required v-model="kelurahan_id">
+											<option value="">-- Pilih Desa --</option>
+											<option v-for="(i,idx) in kelurahan" :value="i.name">{{ i.name }}</option>
+										</select>
+									</div>
+
+									<div class="row">
+										<div class="col-6">
+											<div class="form-group">
+												<label>RT</label>
+												<input type="number" class="form-control" required v-model="rt" placeholder="Input RT...">
+											</div>
+										</div>
+										<div class="col-6">
+											<div class="form-group">
+												<label>RW</label>
+												<input type="number" class="form-control" required v-model="rw" placeholder="Input RW...">
+											</div>
+										</div>
+									</div>
+									
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Penghasilan Sebelum Pandemi</label>
+												<input type="number" class="form-control" required v-model="penghasilan_sebelum" placeholder="Input Penghasilan Sebelum Pandemi...">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Penghasilan Sesudah Pandemi</label>
+												<input type="number" class="form-control" required v-model="penghasilan_sesudah" placeholder="Input Penghasilan Sesudah Pandemi...">
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label>Alasan membutuhkan Bantuan</label>
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="alasan" v-model="alasan">
+											<span>Kehilangan pekerjaan</span>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="alasan" v-model="alasan">
+											<span> Kepala keluarga terdampak atau korban Covid-19 </span>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="alasan" v-model="alasan">
+											<span> Tergolong fakir/miskin semenjak sebelum Covid-19 </span>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="alasan" v-model="alasan">
+											<span> Lainnya</span>
+										</div>
+									</div>
+									
+								</form>
+								
+							</div>
+							<div class="col-md-4 animate__animated animate__slideInRight" v-else-if="pages == '2'">
+								<div v-if="success.length == 0">
+									
+								</div>
+								<div v-else>
+									<div class="alert alert-success" role="alert">
+										<ul>
+											<li v-for="successes in success">{{successes}}</li>
+										</ul>
+									</div>
+								</div>
+						      <table class="table table-responsive table-sm table-borderless">
+						      	<tr>
+						      		<td>Nama</td>
+						      		<td>:</td>
+						      		<td>{{nama}}</td>
+						      	</tr>
+
+						      	<tr>
+						      		<td>NIK</td>
+						      		<td>:</td>
+						      		<td>{{nik}}</td>
+						      	</tr>
+
+						      	<tr>
+						      		<td>Nomor Kartu Keluarga</td>
+						      		<td>:</td>
+						      		<td>{{no_kk}}</td>
+						      	</tr>
+
+						      	<tr>
+						      		<td>Umur</td>
+						      		<td>:</td>
+						      		<td>{{umur}}</td>
+						      	</tr>
+
+						      	<tr>
+						      		<td>Jenis Kelamin</td>
+						      		<td>:</td>
+						      		<td>{{jenis_kelamin}}</td>
+						      	</tr>
+
+						      	<tr>
+						      		<td>Alamat</td>
+						      		<td>:</td>
+						      		<td>{{alamat}}</td>
+						      	</tr>
+
+						      	<tr>
+						      		<td>Provinsi</td>
+						      		<td>:</td>
+						      		<td>{{provinsi_id}}</td>
+						      	</tr>
+
+						      	<tr>
+						      		<td>Kota</td>
+						      		<td>:</td>
+						      		<td>{{kota_id}}</td>
+						      	</tr>
+
+						      	<tr>
+						      		<td>Kecamatan</td>
+						      		<td>:</td>
+						      		<td>{{kecamatan_id}}</td>
+						      	</tr>
+								
+								<tr>
+						      		<td>Kelurahan</td>
+						      		<td>:</td>
+						      		<td>{{kelurahan_id}}</td>
+						      	</tr>
+
+						      	<tr>
+						      		<td>RT / RW</td>
+						      		<td>:</td>
+						      		<td>{{rt}} / {{rw}}</td>
+						      	</tr>
+
+								<tr>
+						      		<td>Penghasilan Sebelum Pandemi</td>
+						      		<td>:</td>
+						      		<td>{{penghasilan_sebelum}}</td>
+						      	</tr>
+
+						      	<tr>
+						      		<td>Penghasilan Sesudah Pandemi</td>
+						      		<td>:</td>
+						      		<td>{{penghasilan_sesudah}}</td>
+						      	</tr>
+								
+								<tr>
+						      		<td>Alasan membutuhkan Bantuan</td>
+						      		<td>:</td>
+						      		<td>{{alasan}}</td>
+						      	</tr>
+						      </table>
+
+						      <div>
+						      	Saya menyatakan bahwa data yang diisikan adalah benar dan siap mempertanggungjawabkan apabila ditemukan ketidaksesuaian dalam data tersebut.
+						      </div>
+						    </div>
+							<div class="card-footer">
+								<button type="button" class="btn btn-primary" v-on:click="checkForm">
+								  Simpan
+								</button>
+								<button v-if="pages == '2'" type="button" v-on:click="kembali" class="btn btn-danger btn-rounded">Reset</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script type="module"> 
+
+	  	var app = new Vue({
+			el: '#app',
+			data: {
+				provinsi : [],
+				provinsi_id : "",
+				kota : [],
+				kota_id : "",
+				kecamatan : [],
+				kecamatan_id : "",
+				kelurahan : [],
+				kelurahan_id : "",
+				nama : "",
+				nik : "",
+				no_kk : "",
+				umur : "",
+				jenis_kelamin : "",
+				alamat : "",
+				rt : "",
+				rw : "",
+				penghasilan_sebelum : "",
+				penghasilan_sesudah : "",
+				alasan : "",
+				errors : [],
+				pages : 1,
+				persetujuan : "",
+				success : []
+
+			},
+			created() {
+				fetch(`http://www.emsifa.com/api-wilayah-indonesia/api/provinces.json`)
+				.then(response => response.json())
+				.then(provinces => this.provinsi = provinces);
+			},
+			methods : {
+				searchKota(){ 
+					this.kecamatan = []
+					this.kelurahan = []
+					this.kota_id = ""
+					this.kecamatan_id = ""
+					this.kelurahan_id = ""
+
+					var value = this.provinsi_id
+					fetch(`http://www.emsifa.com/api-wilayah-indonesia/api/regencies/${value}.json`)
+					.then(response => response.json())
+
+					.then(regencies => this.kota = regencies);
+				},
+				searchKecamatan(){
+					var value = this.kota_id
+					this.kecamatan = []
+					this.kelurahan = []
+					this.kecamatan_id = ""
+					this.kelurahan_id = ""
+					fetch(`http://www.emsifa.com/api-wilayah-indonesia/api/districts/${value}.json`)
+					.then(response => response.json())
+					.then(districts => this.kecamatan = districts);
+				},
+				searchKelurahan(){
+					this.kelurahan = []
+					this.kelurahan_id = ""
+					var value = this.kecamatan_id
+					fetch(`http://www.emsifa.com/api-wilayah-indonesia/api/villages/${value}.json`)
+					.then(response => response.json())
+					.then(villages => this.kelurahan = villages);
+				},
+				checkForm: function (e) {
+					this.errors = []
+					if(this.provinsi_id == ""){
+						this.errors.push('provinsi_id tidak boleh kosong !')
+					}
+					if(this.kota_id == ""){
+						this.errors.push('kota_id tidak boleh kosong !')
+					}
+					if(this.kecamatan_id == ""){
+						this.errors.push('kecamatan_id tidak boleh kosong !')
+					}
+					if(this.kelurahan_id == ""){
+						this.errors.push('kelurahan_id tidak boleh kosong !')
+					}
+					if(this.nama == ""){
+						this.errors.push('nama tidak boleh kosong !')
+					}
+					if(this.nik == ""){
+						this.errors.push('nik tidak boleh kosong !')
+					}
+					if(this.no_kk == ""){
+						this.errors.push('no_kk tidak boleh kosong !')
+					}
+					if(this.umur == ""){
+						this.errors.push('umur tidak boleh kosong !')
+					}
+					if(this.jenis_kelamin == ""){
+						this.errors.push('jenis_kelamin tidak boleh kosong !')
+					}
+					if(this.alamat == ""){
+						this.errors.push('alamat tidak boleh kosong !')
+					}
+					if(this.rt == ""){
+						this.errors.push('rt tidak boleh kosong !')
+					}
+					if(this.rw == ""){
+						this.errors.push('rw tidak boleh kosong !')
+					}
+					if(this.penghasilan_sebelum == ""){
+						this.errors.push('penghasilan_sebelum tidak boleh kosong !')
+					}
+					if(this.penghasilan_sesudah == ""){
+						this.errors.push('penghasilan_sesudah tidak boleh kosong !')
+					}
+					if(this.alasan == ""){
+						this.errors.push('alasan tidak boleh kosong !')
+					}
+
+					if(this.errors.length == 0){
+						this.pages = 2;
+					}
+					
+				},
+
+				simpan: function (e) {
+					if(this.persetujuan == ''){
+						this.success = [];
+						this.success.push('Silahkan setujui persetujuan terlebih dahulu')
+					} else {
+						this.success = [];
+						this.success.push('Data berhasil disimpan !')
+					}
+					
+				},
+				kembali: function (e) {
+
+
+					
+				}
+			}
+		
+		})
+
+		
+
+	</script>
+</body>
+
+</html>
